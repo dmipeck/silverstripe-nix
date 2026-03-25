@@ -13,11 +13,16 @@
         , phpExtensions ? (php: [ ])
         , composerPackage ? pkgs.php83Packages.composer
         , extraPackages ? [ ]
+        , extraConfig ? ''
+            xdebug.mode = "develop,coverage"
+            xdebug.start_with_request = "trigger"
+            xdebug.client_port = 9003
+          ''
         }:
         let
           php = phpPackage.buildEnv {
             extensions = ({ enabled, all }: enabled ++ (phpExtensions phpPackage));
-            extraConfig = "";
+            extraConfig = extraConfig;
           };
           composer = composerPackage.override {
             php = php;
